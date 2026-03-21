@@ -1,0 +1,210 @@
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: var(--nav-height);
+  border-bottom: 1px solid transparent;
+  transition: background 0.3s, border-color 0.3s, backdrop-filter 0.3s;
+}
+
+.nav.scrolled {
+  background: rgba(10, 12, 16, 0.92);
+  backdrop-filter: blur(12px);
+  border-color: var(--border);
+}
+
+.inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+/* ── Logo ────────────────────────────────────── */
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.logoMark {
+  font-size: 18px;
+  color: var(--amber);
+  line-height: 1;
+}
+
+.logoText {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  color: var(--text-primary);
+}
+
+.logoText em {
+  font-style: normal;
+  color: var(--amber);
+}
+
+/* ── Status ──────────────────────────────────── */
+
+.statusBar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: auto;
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--classified);
+  animation: pulse-amber 2s infinite;
+}
+
+.statusText {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--classified);
+}
+
+/* ── Links ───────────────────────────────────── */
+
+.links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.navLink {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--text-secondary);
+  padding: 6px 12px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.navLink:hover {
+  color: var(--amber);
+  border-color: var(--border);
+  background: rgba(212, 137, 10, 0.05);
+}
+
+.adminLink {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--amber);
+  padding: 6px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 2px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.adminLink:hover {
+  background: var(--amber);
+  color: var(--ink);
+}
+
+.logoutBtn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  padding: 6px 12px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.logoutBtn:hover {
+  color: var(--red-alert);
+  border-color: rgba(192, 57, 43, 0.4);
+}
+
+/* ── Hamburger ───────────────────────────────── */
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  margin-left: auto;
+}
+
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 1.5px;
+  background: var(--text-primary);
+  transition: all 0.25s;
+  transform-origin: center;
+}
+
+.hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+/* ── Mobile Menu ─────────────────────────────── */
+
+.mobileMenu {
+  display: flex;
+  flex-direction: column;
+  background: rgba(10, 12, 16, 0.98);
+  border-top: 1px solid var(--border);
+  padding: 16px 24px;
+  gap: 4px;
+}
+
+.mobileMenu a,
+.mobileMenu button {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--text-secondary);
+  padding: 12px 0;
+  border-bottom: 1px solid var(--grid-line);
+  text-decoration: none;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  text-align: left;
+  transition: color 0.2s;
+}
+
+.mobileMenu a:hover,
+.mobileMenu button:hover {
+  color: var(--amber);
+}
+
+/* ── Responsive ──────────────────────────────── */
+
+@media (max-width: 768px) {
+  .links { display: none; }
+  .hamburger { display: flex; }
+  .statusBar { display: none; }
+}
