@@ -15,12 +15,21 @@ const PORT = process.env.PORT || 5000
 
 // ── Middleware ──────────────────────────────────────────────
 
-app.use(cors({
-  origin: '*',
-  credentials: false,
-}))
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:4173',
+  'https://strategic-pulse-6ts1.vercel.app',
+]
 
-app.use(express.json({ limit: '2mb' }))
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true)
+    }
+    return callback(new Error('Not allowed by CORS'))
+  },
+  credentials: true,
+}))
 
 // Rate limiting — protect against abuse
 const limiter = rateLimit({
