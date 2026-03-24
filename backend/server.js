@@ -8,6 +8,9 @@ const rateLimit = require('express-rate-limit')
 const postRoutes = require('./routes/posts')
 const authRoutes = require('./routes/auth')
 const newsRoutes = require('./routes/news')
+const userRoutes = require('./routes/users')
+const bookmarkRoutes = require('./routes/bookmarks')
+const adminRoutes = require('./routes/admin')
 const { fetchNews } = require('./controllers/newsController')
 
 const app = express()
@@ -44,6 +47,9 @@ app.use('/api', limiter)
 app.use('/api/posts', postRoutes)
 app.use('/api/auth', authRoutes)
 app.use('/api/news', newsRoutes)
+app.use('/api/users', userRoutes)
+app.use('/api/bookmarks', bookmarkRoutes)
+app.use('/api/admin', adminRoutes)
 
 // Health check
 app.get('/api/health', (req, res) => {

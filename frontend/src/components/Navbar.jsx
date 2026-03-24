@@ -6,7 +6,8 @@ import styles from './Navbar.module.css'
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  const { isAuthenticated, logout } = useAuth()
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const { isAuthenticated, logout, user } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -18,6 +19,7 @@ export default function Navbar() {
 
   useEffect(() => {
     setMenuOpen(false)
+    setUserMenuOpen(false)
   }, [location])
 
   const handleLogout = () => {
@@ -45,13 +47,35 @@ export default function Navbar() {
           <NavLink to="/?category=Geopolitics" label="GEOPOLITICS" />
           <NavLink to="/?category=Defence" label="DEFENCE" />
           <NavLink to="/?category=Tech Warfare" label="TECH WARFARE" />
+          
           {isAuthenticated ? (
             <>
-              <Link to="/admin" className={styles.adminLink}>DASHBOARD</Link>
-              <button onClick={handleLogout} className={styles.logoutBtn}>LOGOUT</button>
+              {/* User menu */}
+              <div style={{ position: 'relative' }}>
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className={styles.userMenuBtn}
+                >
+                  {user?.displayName || user?.username || 'Account'} ▼
+                </button>
+                {userMenuOpen && (
+                  <div className={styles.userDropdown}>
+                    <Link to="/profile">My Profile</Link>
+                    <Link to="/bookmarks">My Bookmarks</Link>
+                    {user?.role === 'admin' && <Link to="/admin">Admin Dashboard</Link>}
+                    <button onClick={handleLogout} className={styles.logoutBtn}>
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
             </>
           ) : (
-            <Link to="/admin/login" className={styles.adminLink}>ADMIN</Link>
+            <>
+              <Link to="/login-user" className={styles.navLink}>LOGIN</Link>
+              <Link to="/signup" className={styles.signupBtn}>SIGN UP</Link>
+              <Link to="/login" className={styles.adminLink}>ADMIN</Link>
+            </>
           )}
         </div>
 
@@ -73,11 +97,19 @@ export default function Navbar() {
           <Link to="/?category=Tech Warfare">TECH WARFARE</Link>
           {isAuthenticated ? (
             <>
-              <Link to="/admin">DASHBOARD</Link>
-              <button onClick={handleLogout}>LOGOUT</button>
+              <Link to="/profile">MY PROFILE</Link>
+              <Link to="/bookmarks">MY BOOKMARKS</Link>
+              {user?.role === 'admin' && <Link to="/admin">ADMIN DASHBOARD</Link>}
+              <button onClick={handleLogout} className={styles.logoutBtn}>
+                LOGOUT
+              </button>
             </>
           ) : (
-            <Link to="/admin/login">ADMIN</Link>
+            <>
+              <Link to="/login-user">LOGIN</Link>
+              <Link to="/signup">SIGN UP</Link>
+              <Link to="/login">ADMIN LOGIN</Link>
+            </>
           )}
         </div>
       )}
@@ -92,3 +124,4 @@ function NavLink({ to, label }) {
     </Link>
   )
 }
+

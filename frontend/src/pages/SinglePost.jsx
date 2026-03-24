@@ -3,13 +3,15 @@ import { usePost } from '../hooks/usePosts'
 import { useAuth } from '../context/AuthContext'
 import { formatDate, CATEGORY_CLASS } from '../utils/helpers'
 import Loader from '../components/Loader'
+import CommentThread from '../components/CommentThread'
+import BookmarkButton from '../components/BookmarkButton'
 import api from '../utils/api'
 import styles from './SinglePost.module.css'
 
 export default function SinglePost() {
   const { id } = useParams()
   const { post, loading, error } = usePost(id)
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, user } = useAuth()
   const navigate = useNavigate()
 
   const handleDelete = async () => {
@@ -36,6 +38,7 @@ export default function SinglePost() {
   }
 
   const badgeClass = CATEGORY_CLASS[post.category] || 'badge-default'
+  const isOwnPost = user?.id === post.userId || user?.role === 'admin'
 
   return (
     <main className={styles.main}>
@@ -43,11 +46,14 @@ export default function SinglePost() {
       <div className={styles.topBar}>
         <div className="container">
           <Link to="/" className={styles.back}>← INTELLIGENCE FEED</Link>
-          {isAuthenticated && (
-            <button onClick={handleDelete} className={styles.deleteBtn}>
-              DELETE REPORT
-            </button>
-          )}
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            <BookmarkButton postId={id} size="medium" />
+            {isOwnPost && (
+              <button onClick={handleDelete} className={styles.deleteBtn}>
+                DELETE REPORT
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -103,6 +109,25 @@ export default function SinglePost() {
               </a>
             </div>
           )}
+
+          {/* Engagement stats */}
+          <div style={{
+            marginTop: '2rem',
+            padding: '1rem',
+            background: 'rgba(212, 137, 10, 0.05)',
+            border: '1px solid rgba(212, 137, 10, 0.2)',
+            borderRadius: '4px',
+            display: 'flex',
+            gap: '2rem',
+            fontSize: '0.9rem',
+          }}>
+            <div>👁 {post.views || 0} views</div>
+            <div>💬 {post.commentCount || 0} comments</div>
+            <div>👍 {post.likes || 0} likes</div>
+          </div>
+
+          {/* Comments Section */}
+          <CommentThread postId={id} />
         </article>
       </div>
     </main>

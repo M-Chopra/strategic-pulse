@@ -1,3 +1,7 @@
+.cardWrapper {
+  position: relative;
+}
+
 .card {
   position: relative;
   display: flex;
@@ -49,6 +53,15 @@
 .featured .excerpt {
   font-size: 1rem;
   max-width: 680px;
+}
+
+/* Bookmark button */
+.bookmarkBtn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  cursor: pointer;
 }
 
 /* ── Category Badge ──────────────────────────── */

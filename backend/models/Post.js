@@ -42,6 +42,22 @@ const postSchema = new mongoose.Schema(
       unique: true,
       sparse: true, // Only enforce uniqueness when field exists
     },
+    // Denormalized counters for performance
+    likes: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    views: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    commentCount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
   },
   {
     timestamps: true, // adds createdAt, updatedAt

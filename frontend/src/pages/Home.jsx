@@ -11,6 +11,9 @@ export default function Home() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [category, setCategory] = useState(searchParams.get('category') || '')
   const [search, setSearch] = useState('')
+  const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
+  const [sortBy, setSortBy] = useState('newest')
   const [page, setPage] = useState(1)
   const LIMIT = 9
 
@@ -24,6 +27,9 @@ export default function Home() {
   const { posts, loading, error, total } = usePosts({
     category: category || undefined,
     search: search || undefined,
+    startDate: startDate || undefined,
+    endDate: endDate || undefined,
+    sortBy: sortBy || undefined,
     page,
     limit: LIMIT,
   })
@@ -37,6 +43,13 @@ export default function Home() {
 
   const handleSearch = (q) => {
     setSearch(q)
+    setPage(1)
+  }
+
+  const handleFilterChange = (filters) => {
+    setStartDate(filters.startDate || '')
+    setEndDate(filters.endDate || '')
+    setSortBy(filters.sortBy || 'newest')
     setPage(1)
   }
 
@@ -62,7 +75,7 @@ export default function Home() {
           </p>
 
           <div className={styles.heroSearch}>
-            <SearchBar onSearch={handleSearch} />
+            <SearchBar onSearch={handleSearch} onFilterChange={handleFilterChange} />
           </div>
 
           <div className={styles.heroStats}>
@@ -94,11 +107,14 @@ export default function Home() {
         {/* Filters bar */}
         <div className={styles.filtersBar}>
           <CategoryFilter active={category} onChange={handleCategoryChange} />
-          {(search || category) && (
+          {(search || category || startDate || endDate || sortBy !== 'newest') && (
             <button
               className={styles.clearFilters}
               onClick={() => {
                 setSearch('')
+                setStartDate('')
+                setEndDate('')
+                setSortBy('newest')
                 handleCategoryChange('')
               }}
             >

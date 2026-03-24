@@ -7,11 +7,20 @@ import Home from './pages/Home'
 import SinglePost from './pages/SinglePost'
 import AdminDashboard from './pages/AdminDashboard'
 import Login from './pages/Login'
+import UserLogin from './pages/UserLogin'
+import Signup from './pages/Signup'
+import Profile from './pages/Profile'
 
-// Protect admin routes
+// Protect admin routes (legacy admin only)
+function AdminRoute({ children }) {
+  const { isAuthenticated, user } = useAuth()
+  return isAuthenticated && (user?.role === 'admin' || user?.username) ? children : <Navigate to="/login" replace />
+}
+
+// Protect user routes
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth()
-  return isAuthenticated ? children : <Navigate to="/admin/login" replace />
+  return isAuthenticated ? children : <Navigate to="/login-user" replace />
 }
 
 function AppRoutes() {
@@ -21,13 +30,29 @@ function AppRoutes() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/post/:id" element={<SinglePost />} />
-        <Route path="/admin/login" element={<Login />} />
+        
+        {/* Auth routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/login-user" element={<UserLogin />} />
+        <Route path="/signup" element={<Signup />} />
+        
+        {/* User routes */}
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+        
+        {/* Admin routes */}
         <Route
           path="/admin"
           element={
-            <ProtectedRoute>
+            <AdminRoute>
               <AdminDashboard />
-            </ProtectedRoute>
+            </AdminRoute>
           }
         />
       </Routes>
@@ -45,3 +70,4 @@ export default function App() {
     </BrowserRouter>
   )
 }
+

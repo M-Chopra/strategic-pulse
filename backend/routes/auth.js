@@ -1,32 +1,27 @@
 const express = require('express')
 const router = express.Router()
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcryptjs')
+const {
+  signup,
+  login,
+  getMe,
+  refreshToken,
+  adminLogin,
+} = require('../controllers/authController')
+const { userAuth } = require('../middleware/userAuth')
 
-// In production you'd store hashed passwords in a DB.
-// For this project, credentials come from .env.
-// POST /api/auth/login
-router.post('/login', async (req, res) => {
-  const { username, password } = req.body
+// User registration
+router.post('/signup', signup)
 
-  if (!username || !password) {
-    return res.status(400).json({ message: 'Username and password required' })
-  }
+// User login (email + password)
+router.post('/login', login)
 
-  const validUsername = process.env.ADMIN_USERNAME || 'admin'
-  const validPassword = process.env.ADMIN_PASSWORD || 'admin123'
+// Admin login (legacy - hardcoded from env)
+router.post('/admin-login', adminLogin)
 
-  if (username !== validUsername || password !== validPassword) {
-    return res.status(401).json({ message: 'Invalid credentials' })
-  }
+// Get current user (protected)
+router.get('/me', userAuth, getMe)
 
-  const token = jwt.sign(
-    { username, role: 'admin' },
-    process.env.JWT_SECRET,
-    { expiresIn: '7d' }
-  )
-
-  res.json({ token, username })
-})
+// Refresh token
+router.post('/refresh', refreshToken)
 
 module.exports = router

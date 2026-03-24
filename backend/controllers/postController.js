@@ -1,16 +1,35 @@
 const Post = require('../models/Post')
 
 // GET /api/posts
-// Supports: ?category=, ?search=, ?page=, ?limit=
+// Supports: ?category=, ?search=, ?page=, ?limit=, ?startDate=, ?endDate=, ?sortBy=
 async function getPosts(req, res) {
   try {
-    const { category, search, page = 1, limit = 9 } = req.query
+    const {
+      category,
+      search,
+      page = 1,
+      limit = 9,
+      startDate,
+      endDate,
+      sortBy = 'newest',
+    } = req.query
     const skip = (parseInt(page) - 1) * parseInt(limit)
 
     const query = {}
 
     if (category) {
       query.category = category
+    }
+
+    // Date range filtering
+    if (startDate || endDate) {
+      query.createdAt = {}
+      if (startDate) {
+        query.createdAt.$gte = new Date(startDate)
+      }
+      if (endDate) {
+        query.createdAt.$lte = new Date(endDate)
+      }
     }
 
     if (search) {
@@ -22,9 +41,23 @@ async function getPosts(req, res) {
       ]
     }
 
+    // Determine sort order
+    let sortOption = { createdAt: -1 } // default: newest first
+
+    if (sortBy === 'trending') {
+      // Trending: highest likes in last 7 days
+      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+      query.createdAt = query.createdAt || {}
+      query.createdAt.$gte = sevenDaysAgo
+      sortOption = { likes: -1, views: -1, createdAt: -1 }
+    } else if (sortBy === 'relevance' && search) {
+      // Relevance: use text search score (requires text index)
+      sortOption = { score: { $meta: 'textScore' } }
+    }
+
     const [posts, total] = await Promise.all([
       Post.find(query)
-        .sort({ createdAt: -1 })
+        .sort(sortOption)
         .skip(skip)
         .limit(parseInt(limit))
         .select('-titleHash') // Don't expose hash to client
