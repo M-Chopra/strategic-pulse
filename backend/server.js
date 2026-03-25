@@ -25,14 +25,9 @@ const allowedOrigins = [
 ]
 
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      return callback(null, true)
-    }
-    return callback(new Error('Not allowed by CORS'))
-  },
-  credentials: true,
-}))
+  origin: "*",
+  credentials: true
+}));
 
 // Rate limiting — protect against abuse
 const limiter = rateLimit({
