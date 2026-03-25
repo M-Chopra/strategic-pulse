@@ -18,15 +18,12 @@ const PORT = process.env.PORT || 5000
 
 // ── Middleware ──────────────────────────────────────────────
 
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:4173',
-  'https://strategic-pulse-6ts1.vercel.app',
-]
+
 
 app.use(cors({
   origin: "*",
-  credentials: true
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
 // Rate limiting — protect against abuse
